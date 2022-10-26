@@ -203,7 +203,10 @@ public class MainBattleController implements PropertyChangeListener {
                                 }
                             });
                 }
-
+                if (gameEngine.getField(new Point(x1,y1)).isPresent()){
+                    Image img = new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath());
+                    mapTile.setBackground(img);
+                }
                 if (gameEngine.getCreature(new Point(x1, y1)).isPresent()) {
                     if (gameEngine.getCreature(new Point(x, y)).get().isAlive()) {
                         mapTile.setName("\n\n" + gameEngine.getCreature(new Point(x, y)).get().getAmount());
