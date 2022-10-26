@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.embed.swing.SwingFXUtils;
 import pl.psi.GameEngine;
 import pl.psi.Hero;
 import pl.psi.Point;
@@ -27,6 +28,7 @@ import pl.psi.spells.Spell;
 import pl.psi.spells.SpellTypes;
 import pl.psi.spells.SpellableIf;
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -206,9 +208,26 @@ public class MainBattleController implements PropertyChangeListener {
 
                 if (gameEngine.getCreature(new Point(x1, y1)).isPresent()) {
                     if (gameEngine.getCreature(new Point(x, y)).get().isAlive()) {
-                        mapTile.setName("\n\n" + gameEngine.getCreature(new Point(x, y)).get().getAmount());
-                        Image img = new Image(gameEngine.getCreature(new Point(x1, y1)).get().getBasicStats().getImagePath());
-                        mapTile.setBackground(img);
+                        if (gameEngine.getHero2().getCreatures().contains(gameEngine.getCreature(new Point(x1, y1)).get())){
+                            mapTile.setName("\n\n" + gameEngine.getCreature(new Point(x, y)).get().getAmount());
+                            Image img = new Image(gameEngine.getCreature(new Point(x1, y1)).get().getBasicStats().getImagePath());
+
+                            BufferedImage flipped = new BufferedImage((int)img.getWidth(), (int)img.getHeight(), BufferedImage.TYPE_INT_RGB);
+                            for (int i = 0; i < (int)img.getHeight(); i++){
+                                for (int k = 0; k < (int)img.getWidth(); k++){
+                                    flipped.setRGB(((int)img.getWidth()-1)-k, i, img.getPixelReader().getArgb(k, i));
+                                }
+                            }
+
+                            Image image = SwingFXUtils.toFXImage(flipped, null);
+                            mapTile.setBackground(image);
+                        }else{
+                            mapTile.setName("\n\n" + gameEngine.getCreature(new Point(x, y)).get().getAmount());
+                            Image img = new Image(gameEngine.getCreature(new Point(x1, y1)).get().getBasicStats().getImagePath());
+                            mapTile.setBackground(img);
+                        }
+
+
                     } else {
                         Image img = new Image("/images/dead.jpg");
                         mapTile.setBackground(img);
@@ -328,8 +347,17 @@ public class MainBattleController implements PropertyChangeListener {
                 }
 
                 if (gameEngine.isCurrentCreature(new Point(x, y)) && gameEngine.isCurrentCreatureAlive()) {
-                    var img = new Image(gameEngine.getCreature(new Point(x, y)).get().getBasicStats().getCurrentImagePath());
-                    mapTile.setBackground(img);
+                    Image img = new Image(gameEngine.getCreature(new Point(x1, y1)).get().getBasicStats().getCurrentImagePath());
+
+                    BufferedImage flipped = new BufferedImage((int)img.getWidth(), (int)img.getHeight(), BufferedImage.TYPE_INT_RGB);
+                    for (int i = 0; i < (int)img.getHeight(); i++){
+                        for (int k = 0; k < (int)img.getWidth(); k++){
+                            flipped.setRGB(((int)img.getWidth()-1)-k, i, img.getPixelReader().getArgb(k, i));
+                        }
+                    }
+
+                    Image image = SwingFXUtils.toFXImage(flipped, null);
+                    mapTile.setBackground(image);
                 }
 
                 console.setText(gameEngine.getAttackInformation());
