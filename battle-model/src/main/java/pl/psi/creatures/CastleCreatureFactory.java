@@ -41,6 +41,11 @@ public class CastleCreatureFactory {
                             .amount(aAmount)
                             .build();
                     return new ShooterCreatureDecorator( creature2, 12 );
+                case 7:
+                    return new BonusDamageToDefenderType(new Creature.Builder().statistic(CreatureStatistic.ANGEL)
+                            .amount(aAmount)
+                            .build(), CreatureStatistic.CRUSADER, 1.5);
+
             }
         } else {
             switch (aTier) {
