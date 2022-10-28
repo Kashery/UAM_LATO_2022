@@ -808,5 +808,27 @@ public class CreatureTest {
         attacker.attack(defender);
         assertThat(attacker.getShots()).isEqualTo(22);
     }
+    @Test
+    void multiRetaliationCreaturesShouldRetaliateCorrectAmountOfTimes(){
+        Creature creature = new Creature.Builder().statistic(CreatureStatistic.GRIFFIN)
+                .amount(1)
+                .build();
+        MultiRetaliationCreatureDecorator attacker = new MultiRetaliationCreatureDecorator( creature, 2);
+        MultiRetaliationCreatureDecorator defender = new MultiRetaliationCreatureDecorator( creature, 2);
+        // check correct initial values
+        assertThat(attacker.getCurrentRetaliation()).isEqualTo(2);
+        assertThat(defender.getCanCounterAttack()).isEqualTo(true);
+        // first attack should get a counterattack
+        attacker.attack(defender);
+        assertThat(defender.getCurrentRetaliation()).isEqualTo(1);
+        attacker.attack(defender);
+        // second attack should get a counterattack and disable it for future attacks
+        assertThat(attacker.getCurrentRetaliation()).isEqualTo(2);
+        assertThat(defender.getCanCounterAttack()).isEqualTo(false);
+        attacker.attack(defender);
+        // third attack should not meet with a counterattack
+        assertThat(attacker.getCurrentRetaliation()).isEqualTo(2);
+        assertThat(defender.getCanCounterAttack()).isEqualTo(false);
+    }
 
 }
