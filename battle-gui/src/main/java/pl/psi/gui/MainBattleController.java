@@ -172,21 +172,32 @@ public class MainBattleController implements PropertyChangeListener {
                 final MapTile mapTile = new MapTile("");
 
                 if (gameEngine.canMove(new Point(x1, y1)) && !gameEngine.isHeroCastingSpell()) {
-                    mapTile.setBackground(Color.DARKGREY);
+                    if (!gameEngine.getField(new Point(x1, y1)).isEmpty()){
+                        mapTile.setBackground(new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath()),java.awt.Color.LIGHT_GRAY);
+                    }else{
+                        mapTile.setBackground(Color.DARKGREY);
+                    }
                     List<Point> path = gameEngine.getPath(new Point(x1, y1));
 
                     if (gameEngine.getCreature(new Point(x1, y1)).isEmpty() || gameEngine.getCreature(new Point(x1, y1)).isPresent()) {
                         mapTile.setOnMouseEntered(mouseEvent -> {
                             if (gameEngine.getCreature(new Point(x1, y1)).isEmpty()) {
-                                mapTile.setBackground(Color.GREY);
+                                if (!gameEngine.getField(new Point(x1, y1)).isEmpty()){
+                                    mapTile.setBackground(new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath()),java.awt.Color.GRAY);
+                                }else{
+                                    mapTile.setBackground(Color.GREY);
+                                }
+
                             }
                         });
 
                         mapTile.setOnMouseExited(mouseEvent -> {
                             if (gameEngine.getCreature(new Point(x1, y1)).isEmpty()) {
-                                mapTile.setBackground(Color.DARKGREY);
-                                gameEngine.getField(new Point(x1, y1))
-                                    .ifPresent(f -> mapTile.setBackground(new Image(f.getImagePath())));
+                                if (!gameEngine.getField(new Point(x1, y1)).isEmpty()){
+                                    mapTile.setBackground(new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath()),java.awt.Color.LIGHT_GRAY);
+                                }else{
+                                    mapTile.setBackground(Color.DARKGREY);
+                                }
                             }
                         });
                     }
@@ -202,11 +213,10 @@ public class MainBattleController implements PropertyChangeListener {
                                     });
                                 }
                             });
+                } else if (!gameEngine.getField(new Point(x1, y1)).isEmpty()){
+                    mapTile.setBackground(new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath()),java.awt.Color.WHITE);
                 }
-                if (gameEngine.getField(new Point(x1,y1)).isPresent()){
-                    Image img = new Image(gameEngine.getField(new Point(x1, y1)).get().getImagePath());
-                    mapTile.setBackground(img);
-                }
+
                 if (gameEngine.getCreature(new Point(x1, y1)).isPresent()) {
                     if (gameEngine.getCreature(new Point(x, y)).get().isAlive()) {
                         mapTile.setName("\n\n" + gameEngine.getCreature(new Point(x, y)).get().getAmount());
