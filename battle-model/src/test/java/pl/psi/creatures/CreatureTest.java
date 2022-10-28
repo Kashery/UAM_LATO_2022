@@ -797,4 +797,16 @@ public class CreatureTest {
         assertThat(attacker.getLastCounterAttackDamage()).isBetween(11.0,20.0);
     }
 
+    @Test
+    void multiAttackRangedCreatureShouldDepleteShots(){
+        Creature creature = new Creature.Builder().statistic(CreatureStatistic.MARKSMAN)
+                .amount(1)
+                .build();
+        MultiAttackRangedCreatureDecorator attacker = new MultiAttackRangedCreatureDecorator( creature, 24 , 2);
+        assertThat(attacker.getShots()).isEqualTo(24);
+        AbstractCreature defender = new MultiAttackRangedCreatureDecorator( creature, 24 , 6);
+        attacker.attack(defender);
+        assertThat(attacker.getShots()).isEqualTo(22);
+    }
+
 }
