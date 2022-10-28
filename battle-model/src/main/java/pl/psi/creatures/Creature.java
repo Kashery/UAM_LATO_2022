@@ -75,6 +75,15 @@ public class Creature implements PropertyChangeListener, Comparable<Creature>, S
             }
         }
     }
+    public void attack(final Creature aDefender, final double multiplier) {
+        if (isAlive()) {
+            double damage = multiplier * getCalculator().calculateDamage(this, aDefender);
+            applyDamage(aDefender, damage);
+            if (canCounterAttack(aDefender)) {
+                aDefender.counterAttack(this);
+            }
+        }
+    }
 
     protected void applyDamage(final Creature aDefender, final double aDamage) {
         aDefender.setCurrentHp(((aDefender.getAmount() - 1) * aDefender.getMaxHp()) + aDefender.getCurrentHp() - aDamage);

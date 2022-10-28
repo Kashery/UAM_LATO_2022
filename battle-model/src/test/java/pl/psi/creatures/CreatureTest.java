@@ -830,5 +830,39 @@ public class CreatureTest {
         assertThat(attacker.getCurrentRetaliation()).isEqualTo(2);
         assertThat(defender.getCanCounterAttack()).isEqualTo(false);
     }
+    @Test
+    void bonusDamageCreatureShouldApplyBonusToCorrectTypes(){
+        final double mul = 1.5;
+        BonusDamageToDefenderType attacker = new BonusDamageToDefenderType( new Creature.Builder().statistic(CreatureStatistic.ANGEL)
+                .amount(1)
+                .build(), CreatureStatistic.CRUSADER,mul);
+        MultiRetaliationCreatureDecorator defender = new MultiRetaliationCreatureDecorator( new Creature.Builder().statistic(CreatureStatistic.CRUSADER)
+                .amount(1)
+                .build(), 2);
+        // check correct initial values
+        defender.setCurrentHp(10000.0);
+        attacker.setCurrentHp(10000.0);
+
+
+        double hpstart1 = defender.getCurrentHp();
+        attacker.attack(defender);
+        double hpc1 = defender.getCurrentHp();
+
+
+
+        BonusDamageToDefenderType attacker2 = new BonusDamageToDefenderType( new Creature.Builder().statistic(CreatureStatistic.ANGEL)
+                .amount(1)
+                .build(), CreatureStatistic.GRIFFIN,mul);
+        MultiRetaliationCreatureDecorator defender2 = new MultiRetaliationCreatureDecorator( new Creature.Builder().statistic(CreatureStatistic.CRUSADER)
+                .amount(1)
+                .build(), 2);
+        defender2.setCurrentHp(10000.0);
+        attacker2.setCurrentHp(10000.0);
+        attacker2.attack(defender2);
+
+
+        assertThat(attacker.getLastAttackDamage()/attacker2.getLastAttackDamage()).isEqualTo(mul);
+
+    }
 
 }
