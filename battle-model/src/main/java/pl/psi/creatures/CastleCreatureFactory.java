@@ -51,7 +51,7 @@ public class CastleCreatureFactory {
                     Creature creature = new Creature.Builder().statistic(CreatureStatistic.MARKSMAN)
                             .amount(aAmount)
                             .build();
-                    return new ShooterCreatureDecorator( creature, 24 );
+                    return new MultiAttackRangedCreatureDecorator( creature, 24 , 6);
                 case 3:
                     return new Creature.Builder().statistic(CreatureStatistic.ROYAL_GRIFFIN)
                             .amount(aAmount)
